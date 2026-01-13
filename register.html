@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kayıt Ol | İP DÜNYAM</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+ <header class="navbar">
+  <div class="nav-top">
+    <a class="logo" href="index.html" aria-label="İP DÜNYAM Anasayfa">
+  <img src="images/logo.svg" alt="İP DÜNYAM" class="logo-img">
+    <button class="nav-toggle" id="navToggle" aria-label="Menüyü aç/kapat">☰</button>
+  </div>
+
+  <nav id="mainNav">
+    <ul>
+      <li><a href="index.html">Ana Sayfa</a></li>
+      <li><a href="products.html">Ürünler</a></li>
+      <li><a href="about.html">Hakkımda</a></li>
+      <li><a href="contact.html">İletişim</a></li>
+
+      <li>
+        <a class="cart-link" href="cart.html">
+          <span class="cart-icon">🛒</span>
+          <span id="cart-count">0</span>
+        </a>
+      </li>
+
+      <li><a href="login.html" id="profile-link" class="profile-link">👤 Giriş</a></li>
+    </ul>
+  </nav>
+</header>
+
+  <section class="auth-section">
+    <h1>Kayıt Ol</h1>
+    <form id="register-form">
+      <input type="text" id="fullname" placeholder="Ad Soyad" required>
+      <input type="email" id="email" placeholder="E-posta" required>
+      <input type="tel" id="phone" placeholder="Telefon (05xx...)" required>
+      <input type="password" id="password" placeholder="Şifre (min 6)" required minlength="6">
+      <button type="submit" class="btn">Kayıt Ol</button>
+    </form>
+    <p>Zaten hesabın var mı? <a href="login.html">Giriş Yap</a></p>
+  </section>
+
+  <script>
+    document.getElementById('register-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const fullname = document.getElementById('fullname').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const password = document.getElementById('password').value;
+
+      const verificationCode = Math.floor(100000 + Math.random() * 900000);
+
+      const user = {
+        fullname, email, phone, password,
+        verified: false,
+        code: verificationCode
+      };
+
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('isLoggedIn', 'false');
+
+      alert(`Doğrulama kodunuz: ${verificationCode}\n(Şimdilik ekranda gösteriyoruz)`);
+      window.location.href = 'verify.html';
+    });
+  </script>
+</body>
+</html>
