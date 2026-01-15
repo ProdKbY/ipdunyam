@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>E-posta Doğrulama | İP DÜNYAM</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    .verify-wrap{max-width:560px;margin:28px auto;padding:16px}
+    .verify-card{border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px}
+    .verify-card h1{margin:0 0 8px;font-size:24px}
+    .verify-card p{margin:0 0 12px;color:#555;line-height:1.5}
+    .verify-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .verify-btn{padding:11px 14px;border-radius:12px;border:1px solid rgba(0,0,0,.12);background:#fff;cursor:pointer}
+    .verify-btn.primary{background:#111;color:#fff;border-color:#111}
+    .verify-msg{margin-top:12px;padding:10px 12px;border-radius:12px;display:none}
+    .verify-msg.show{display:block}
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="nav-top">
+      <a class="logo" href="index.html">İP DÜNYAM</a>
+      <button id="navToggle" class="nav-toggle" aria-label="Menüyü Aç/Kapat">☰</button>
+      <nav id="mainNav" class="nav">
+        <a href="products.html">Ürünler</a>
+        <a href="cart.html">Sepet (<span id="cart-count">0</span>)</a>
+        <a id="profile-link" href="login.html">Giriş Yap</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="verify-wrap">
+    <section class="verify-card">
+      <h1>Mailini doğrula</h1>
+      <p>
+        E-posta adresine bir doğrulama bağlantısı gönderdik.
+        Gelen kutunu (ve spam/junk) kontrol et. Bağlantıya tıkladıktan sonra giriş yapabilirsin.
+      </p>
+
+      <div class="verify-actions">
+        <button class="verify-btn primary" id="goLogin">Giriş sayfasına git</button>
+        <button class="verify-btn" id="resend">Doğrulama mailini tekrar gönder</button>
+        <button class="verify-btn" id="check">Doğrulandım mı kontrol et</button>
+      </div>
+
+      <div id="msg" class="verify-msg"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 İP DÜNYAM</p>
+  <p class="powered-by">Powered by <strong>Devrim Koç</strong></p>
+</footer>
+
+  <script src="js/main.js"></script>
+
+<script type="module">
+  import { auth } from "./js/firebase.js";
+  import {
+    onAuthStateChanged,
+    sendEmailVerification,
+    reload
+  } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+  const msg = document.getElementById("msg");
+  const show = (text) => {
+    if (!msg) return alert(text);
+    msg.textContent = text;
+    msg.classList.add("show");
+  };
+
+  const goLoginBtn = document.getElementById("goLogin");
+  const resendBtn = document.getElementById("resend");
+  const checkBtn = document.getElementById("check");
+
+  if (goLoginBtn) {
+    goLoginBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+  }
+
+  let currentUser = null;
+
+  // Kullanıcı state'ini güvenli şekilde yakala
+  onAuthStateChanged(auth, (user) => {
+    currentUser = user || null;
+
+    // Kullanıcı yoksa bilgilendir (resend/check için gerekli)
+    if (!currentUser) {
+      show("Doğrulama mailini tekrar göndermek veya kontrol etmek için giriş yapman gerekir.");
+    }
+  });
+
+  if (resendBtn) {
+    resendBtn.addEventListener("click", async () => {
+      if (!currentUser) {
+        show("Doğrulama mailini tekrar göndermek için önce giriş yapmalısın.");
+        return;
+      }
+
+      try {
+        await sendEmailVerification(currentUser);
+        show("Doğrulama maili tekrar gönderildi. Mail kutunu (spam dahil) kontrol et.");
+      } catch (e) {
+        show("Hata: " + (e?.message || "Bilinmeyen hata"));
+      }
+    });
+  }
+
+  if (checkBtn) {
+    checkBtn.addEventListener("click", async () => {
+      if (!currentUser) {
+        show("Kontrol için önce giriş yapmalısın.");
+        return;
+      }
+
+      try {
+        await reload(currentUser);
+
+        if (currentUser.emailVerified) {
+          show("✅ Mail doğrulandı! Profil sayfasına yönlendiriliyorsun…");
+          setTimeout(() => window.location.href = "profile.html", 700);
+        } else {
+          show("Henüz doğrulanmamış görünüyor. Maildeki bağlantıya tıklayıp tekrar dene.");
+        }
+      } catch (e) {
+        show("Hata: " + (e?.message || "Bilinmeyen hata"));
+      }
+    });
+  }
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kayıt Ol | İP DÜNYAM</title>
+  <link rel="stylesheet" href="css/style.css" />
+
+  <style>
+    .auth-wrap{max-width:520px;margin:24px auto;padding:18px}
+    .auth-card{border:1px solid rgba(0,0,0,.08);border-radius:16px;padding:18px}
+    .auth-title{margin:0 0 6px;font-size:26px}
+    .auth-sub{margin:0 0 14px;color:#666;font-size:14px}
+    .auth-row{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+    .auth-row label{font-size:13px;color:#333}
+    .auth-input{width:100%;padding:12px 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;outline:none}
+    .auth-input:focus{border-color:rgba(0,0,0,.35)}
+    .auth-actions{display:flex;gap:10px;align-items:center;margin-top:14px}
+    .auth-btn{width:100%;padding:12px 14px;border:0;border-radius:12px;cursor:pointer}
+    .auth-btn.primary{background:#111;color:#fff}
+    .auth-btn.primary:disabled{opacity:.6;cursor:not-allowed}
+    .auth-link{display:inline-block;margin-top:12px;color:#111;text-decoration:underline;font-size:14px}
+    .auth-msg{display:none;margin-top:12px;padding:10px 12px;border-radius:12px;font-size:14px}
+    .auth-msg.error{display:block;background:rgba(220,38,38,.10);color:#b91c1c;border:1px solid rgba(220,38,38,.20)}
+    .auth-msg.ok{display:block;background:rgba(34,197,94,.10);color:#166534;border:1px solid rgba(34,197,94,.20)}
+    .pw-wrap{display:flex;gap:10px;align-items:center}
+    .pw-wrap .auth-input{flex:1}
+    .pw-toggle{padding:10px 12px;border:1px solid rgba(0,0,0,.12);border-radius:12px;background:#fff;cursor:pointer;white-space:nowrap}
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="nav-top">
+      <a class="logo" href="images/logo.svg"></a>
+      <button id="navToggle" class="nav-toggle" aria-label="Menüyü Aç/Kapat">☰</button>
+      <nav id="mainNav" class="nav">
+        <a href="products.html">Ürünler</a>
+        <a href="cart.html">Sepet (<span id="cart-count">0</span>)</a>
+        <a id="profile-link" href="login.html">Giriş Yap</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-wrap">
+    <section class="auth-card">
+      <h1 class="auth-title">Kayıt Ol</h1>
+      <p class="auth-sub">Hızlıca hesap oluştur, giriş yap ve sipariş adımlarını kolaylaştır.</p>
+
+      <div id="msg" class="auth-msg"></div>
+
+      <form id="registerForm" novalidate>
+        <div class="auth-row">
+          <label for="regName">Ad Soyad</label>
+          <input class="auth-input" id="regName" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="auth-row">
+          <label for="regEmail">E-posta</label>
+          <input class="auth-input" id="regEmail" type="email" autocomplete="email" inputmode="email" required />
+        </div>
+
+        <div class="auth-row">
+          <label for="regPassword">Şifre</label>
+          <div class="pw-wrap">
+            <input class="auth-input" id="regPassword" type="password" autocomplete="new-password" required />
+            <button type="button" class="pw-toggle" id="pwToggle">Göster</button>
+          </div>
+          <small style="color:#666;font-size:12px;line-height:1.35">
+            En az 6 karakter kullanmanı öneririm.
+          </small>
+        </div>
+
+        <div class="auth-actions">
+          <button class="auth-btn primary" id="submitBtn" type="submit">Kayıt Ol</button>
+        </div>
+
+        <a class="auth-link" href="login.html">Zaten hesabın var mı? Giriş yap</a>
+      </form>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 İP DÜNYAM</p>
+  <p class="powered-by">Powered by <strong>Devrim Koç</strong></p>
+</footer>
+
+  <script type="module" src="js/firebase.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script src="js/main.js"></script>
+  <!-- Cloudflare Turnstile -->
+<div class="cf-turnstile"
+     data-sitekey="0x4AAAAAACMecyCsf8nhKqp6"
+     data-callback="onTurnstileOk"
+     data-expired-callback="onTurnstileExpired"></div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<script>
+  // Turnstile token (frontend gate)
+  window.__tsToken = "";
+  function onTurnstileOk(token) { window.__tsToken = token; }
+  function onTurnstileExpired() { window.__tsToken = ""; }
+</script>
+
+
+
+
+
+  
+  </body>
+</html>
+
