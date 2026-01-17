@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sipariş Onay | İP DÜNYAM</title>
+<link href="css/style.css?v=10" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;family=Open+Sans&amp;display=swap" rel="stylesheet"/>
+</head>
+<body>
+<header class="navbar">
+<div class="nav-top">
+<a aria-label="İP DÜNYAM Anasayfa" class="logo" href="index.html">
+<img alt="İP DÜNYAM" class="logo-img" src="images/logo.svg"/>
+</a>
+<button aria-label="Menüyü aç/kapat" class="nav-toggle" id="navToggle">☰</button>
+</div>
+<nav id="mainNav">
+<ul>
+<li><a href="index.html">Ana Sayfa</a></li>
+<li><a href="products.html">Ürünler</a></li>
+<li><a href="about.html">Hakkımda</a></li>
+<li><a href="contact.html">İletişim</a></li>
+<li>
+<a aria-label="Sepetim" class="cart-link" href="cart.html">
+<span class="cart-icon">🛒</span>
+<span id="cart-count">0</span>
+</a>
+</li>
+<li><a class="profile-link" href="login.html" id="profile-link">👤 Giriş Yap</a></li>
+</ul>
+</nav>
+</header>
+<section class="checkout-page">
+<h1 class="page-title">Sipariş Onay</h1>
+<div class="checkout-grid">
+<div class="card checkout-card">
+<h2 class="card-title">Sipariş Özeti</h2>
+<div class="summary-items" id="checkout-items"></div>
+<div class="summary-line">
+<span>Ara Toplam</span>
+<span id="subtotal">0 TL</span>
+</div>
+<div class="summary-line">
+<span>Kargo</span>
+<span id="shipping-fee">0 TL</span>
+</div>
+<div class="summary-total">
+<span>Genel Toplam</span>
+<strong id="grand-total">0 TL</strong>
+</div>
+<p class="mini-note" id="stock-note">Sepetiniz boş 🧺</p>
+</div>
+<div class="card checkout-card">
+<h2 class="card-title">Teslimat &amp; Ödeme</h2>
+<form class="checkout-form" id="checkout-form" onsubmit="event.preventDefault(); return false;">
+<div class="form-group">
+<label>Ad Soyad</label>
+<input id="fullname" placeholder="Ad Soyad" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>Telefon</label>
+<input id="phone" placeholder="05xx xxx xx xx" required="" type="tel"/>
+</div>
+<div class="form-group">
+<label>Adres</label>
+<textarea id="address" placeholder="Adresinizi yazın" required=""></textarea>
+</div>
+<div class="form-group">
+<label>Kargo</label>
+<select id="shipping">
+<option value="Standart">Standart Kargo</option>
+<option value="Hızlı">Hızlı Kargo</option>
+</select>
+</div>
+<div class="form-group">
+<label>Ödeme Yöntemi</label>
+<select id="payment">
+<option value="Havale/EFT">Havale / EFT</option>
+<option value="Shopier">Shopier</option>
+<option value="Kapıda Ödeme">Kapıda Ödeme</option>
+</select>
+</div>
+<div class="pay-info" id="pay-info">Havale/EFT seçildi. IBAN bilgisi sipariş mesajına eklenecek.</div>
+<div class="form-group">
+<label>Sipariş Notu</label>
+<textarea id="note" placeholder="İsterseniz sipariş notu ekleyin"></textarea>
+</div>
+<button class="btn btn-full" type="submit">Siparişi Tamamla</button>
+<p class="checkout-hint">“Siparişi Tamamla” dediğinizde WhatsApp üzerinden sipariş mesajınız hazırlanır.</p>
+</form>
+</div>
+</div>
+</section>
+<footer class="footer">
+<p>© 2026 İP DÜNYAM | Tüm hakları saklıdır.</p>
+<div class="footer-links">
+<a href="kvkk.html">KVKK &amp; Gizlilik</a>
+<a href="iade.html">İade / İptal</a>
+<a href="mesafeli-satis.html">Mesafeli Satış</a>
+</div>
+<p class="powered-by">Powered by <strong>Devrim Koç</strong></p>
+</footer>
+
+<script type="module">
+  import { auth } from "./js/firebase.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+  // Firebase oturumu varsa localStorage'ı doldur (navbar/profil için)
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      try{
+        const name = user.displayName || (user.email ? user.email.split("@")[0] : "Kullanıcı");
+        localStorage.setItem("currentUser", JSON.stringify({ name, email: user.email || "" }));
+        localStorage.setItem("isLoggedIn", "true");
+      }catch(e){}
+      // sayfa akışı devam
+    } else {
+      alert("Sipariş vermek için giriş yapmalısınız.");
+      window.location.href = "login.html";
+    }
+  });
+</script>
+<!-- Checkout script (senin çalışan sürümün) -->
+
+<script src="js/main.js"></script></body>
+</html>
